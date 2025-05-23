@@ -38,9 +38,9 @@ function initializeEditor() {
 
     const dominiqueChatHistory = document.getElementById('dominique-chat-history');
     const dominiqueInfoButton = document.getElementById('dominique-info-button');
-    // const dominiqueCommandHelp = document.getElementById('dominique-command-help'); // Removed
     const dominiqueSubmitButton = document.getElementById('dominique-submit-button');
     const dominiqueHeader = document.getElementById('dominique-header'); 
+    const dominiqueCloseButton = document.getElementById('dominique-close-button'); // New close button
 
     let isDragging = false;
     let initialMouseX, initialMouseY;
@@ -60,7 +60,7 @@ function initializeEditor() {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message', type);
         if (isHtml) {
-            messageDiv.innerHTML = text; // Use innerHTML if content is HTML
+            messageDiv.innerHTML = text; 
         } else {
             messageDiv.textContent = text; 
         }
@@ -111,6 +111,12 @@ function initializeEditor() {
     if (canvas) {
         canvas.addEventListener('click', (event) => {
             const clickedElement = event.target;
+
+            // If click is on the close button or info button, or inside dominique interface, do not deselect
+            if (dominiqueInterface && (dominiqueInterface.contains(clickedElement) || clickedElement === dominiqueInterface)) {
+                return;
+            }
+
             if (clickedElement === canvas) {
                 if (selectedElement) {
                     selectedElement.classList.remove('selected-highlight');
@@ -166,7 +172,7 @@ function initializeEditor() {
             }
             appendMessage(commandText, "user-message"); 
             if (commandText.toLowerCase() === "help") {
-                appendMessage(COMMAND_HELP_HTML, "system-message", true); // Append HTML help
+                appendMessage(COMMAND_HELP_HTML, "system-message", true); 
             } else if (selectedElement) { 
                 executeCommand(selectedElement, commandText);
                 appendMessage(`Command processed: "${commandText}"`, "system-message"); 
@@ -181,16 +187,38 @@ function initializeEditor() {
         if (!commandInput) console.error('Dominique command input not found in edit mode!');
     }
 
-    if (dominiqueInfoButton) { // Removed reference to dominiqueCommandHelp
+    if (dominiqueInfoButton) { 
         dominiqueInfoButton.addEventListener('click', () => {
-            appendMessage(COMMAND_HELP_HTML, "system-message", true); // Append HTML help
+            appendMessage(COMMAND_HELP_HTML, "system-message", true); 
         });
     } else {
         if (!dominiqueInfoButton) console.error('Dominique info button not found in edit mode!');
     }
 
+    // Add event listener for the new close button
+    if (dominiqueCloseButton && dominiqueInterface) {
+        dominiqueCloseButton.addEventListener('click', () => {
+            dominiqueInterface.style.display = 'none';
+            if (selectedElement) {
+                selectedElement.classList.remove('selected-highlight');
+                if (selectedElement.contentEditable === 'true') {
+                    selectedElement.contentEditable = 'false';
+                }
+                selectedElement = null;
+            }
+            appendMessage("Dominique closed.", "system-message"); // Optional feedback
+        });
+    } else {
+        if (!dominiqueCloseButton) console.error('Dominique close button not found in edit mode!');
+    }
+
+
     if (dominiqueHeader && dominiqueInterface) {
         dominiqueHeader.addEventListener('mousedown', (e) => {
+            // Prevent dragging if mousedown is on info or close button
+            if (e.target === dominiqueInfoButton || e.target === dominiqueCloseButton) {
+                return;
+            }
             isDragging = true;
             initialMouseX = e.clientX;
             initialMouseY = e.clientY;

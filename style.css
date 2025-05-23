@@ -2,26 +2,31 @@
 body {
     font-family: sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
+    /* padding: 20px; /* Padding might interfere with full-page bg image edges, remove or set to 0 if needed */
+    padding: 0; /* Remove padding for true full-page background */
+    /* background-color: #f4f4f4; /* Replaced by background image */
+    background-image: url('https://images.unsplash.com/photo-1511884642898-4c92249e20b6?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh; /* Ensure body takes at least full viewport height for background */
 }
 
-.ai-editor {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Existing shadow, kept for now */
-}
+/* .ai-editor rule will be removed */
 
 .canvas {
     width: 800px;
-    margin: 20px auto; /* Added top/bottom margin for spacing from potential top bar */
+    /* margin: 20px auto; Original margin */
+    margin: 70px auto 20px auto; /* Top margin to clear fixed bar, bottom margin for spacing */
     border: 1px solid #ccc;
-    padding: 15px;
+    padding: 20px; /* Increased padding, was 15px, taking from .ai-editor's 20px */
     min-height: 200px;
     margin-bottom: 15px; /* This will be overridden by margin: auto for bottom if top bar is not tall */
-    background-color: #fff; /* Ensure canvas background is white if body is different */
-    box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Softer shadow for the canvas itself */
+    background-color: #fff; 
+    /* box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Original canvas shadow */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Using .ai-editor's original shadow */
+    border-radius: 8px; /* Taking from .ai-editor */
 }
 
 .canvas > * { /* Direct children of canvas */
@@ -50,9 +55,11 @@ body {
     left: 0;
     right: 0;
     height: 50px; /* Fixed height for the bar */
-    background-color: #333;
+    /* background-color: #333; Removed */
+    background-color: transparent;
     z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /* box-shadow: 0 2px 5px rgba(0,0,0,0.2); Removed */
+    box-shadow: none;
 }
 
 /* Save Button - Positioned inside the #editor-ui-container */
@@ -79,19 +86,30 @@ body {
 #dominique-interface {
     display: none; 
     position: absolute; 
-    width: 320px; /* Slightly wider to accommodate padding */
+    width: 400px; /* Changed from 320px to 400px */
     max-height: 400px;
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15), 
-                0 0 3px 1px #ff00ff, 
-                0 0 6px 3px #00ffff, 
-                0 0 9px 5px #ffff00;
+    /* box-shadow: 0 3px 10px rgba(255, 105, 180, 0.5); /* Pink shadow - REMOVED */
     z-index: 999;
     /* padding: 15px; /* Replaced by padding in individual sections */
     display: flex; /* Use flex to structure header, chat, input area */
     flex-direction: column;
+}
+
+#dominique-interface::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  z-index: -1; /* Places the pseudo-element behind the modal's content */
+  border-radius: 20px; /* Modal's border-radius is 5px. 10px offset + 5px radius = 15px. 20px covers well with blur. */
+  background: linear-gradient(to right, red, blue);
+  filter: blur(30px);
+  opacity: 0.9;
 }
 
 #dominique-header {
@@ -103,6 +121,27 @@ body {
     font-weight: bold;
     cursor: move; /* Add cursor to indicate draggable header */
 }
+
+#dominique-header > div { /* Wrapper for info and close buttons */
+    display: flex;
+    align-items: center;
+}
+
+#dominique-close-button {
+    background: transparent;
+    border: none;
+    font-size: 1.8em; /* Make the '×' character larger */
+    padding: 0 5px; 
+    line-height: 1; 
+    cursor: pointer;
+    color: #6c757d; 
+    margin-left: 8px; /* Space from info button */
+    order: 10; /* Ensure it's last if more items were added to wrapper */
+}
+#dominique-close-button:hover {
+    color: #333;
+}
+
 
 #dominique-chat-history {
     flex-grow: 1; /* Takes up available vertical space */
@@ -152,10 +191,7 @@ body {
 }
 
 
-/* Ensure canvas is also not overlapped by the fixed top bar */
-.ai-editor { /* Wrapper for canvas */
-    margin-top: 70px; /* Adjusted to match #dominique-interface's effective top position for consistency */
-}
+/* Ensure canvas is also not overlapped by the fixed top bar - .ai-editor rule removed */
 
 
 /* Dominique Info Button & Help Text - General Styles, position relative to #dominique-interface */
