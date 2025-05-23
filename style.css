@@ -1,16 +1,144 @@
-.ai-editor {
-    width: 200px; /* Or any desired width */
-    height: 150px; /* Or any desired height */
-    padding: 20px;
-    background-color: #f0f0f0; /* A light background for the div */
-    border-radius: 10px; /* Optional: for rounded corners */
-    /* The gradient shadow */
-    box-shadow: 
-        0 0 10px 5px #ff00ff, /* Magenta */
-        0 0 20px 10px #00ffff, /* Cyan */
-        0 0 30px 15px #ffff00; /* Yellow */
-    /* Basic text styling for visibility */
-    color: #333;
+/* Basic styling for the AI Editor */
+body {
     font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.ai-editor {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Existing shadow, kept for now */
+}
+
+.canvas {
+    border: 1px solid #ccc;
+    padding: 15px;
+    min-height: 200px;
+    margin-bottom: 15px;
+}
+
+.canvas > * { /* Direct children of canvas */
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px dashed transparent; /* Make elements visible for easier clicking, overridden by .selected-highlight */
+}
+
+/* 1. Selected Element Highlight */
+.selected-highlight {
+    border: 1px solid dodgerblue !important;
+    box-shadow: 0 0 3px dodgerblue;
+    outline: none; /* Prevent browser default outline on contenteditable focus */
+}
+
+#saveButton {
+    padding: 10px 15px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Keep margin for spacing */
+}
+
+#saveButton:hover {
+    background-color: #4cae4c;
+}
+
+/* 2. Dominique's Interface */
+#dominique-interface {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-top: 10px;
+}
+
+#dominique-interface h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+#dominique-command-input {
+    width: calc(100% - 22px); /* 100% - 2*10px padding - 2*1px border */
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensure padding and border are included in width calculation */
+}
+
+#dominique-submit-button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#dominique-submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* 3. Styling for Created Components */
+
+/* Lists (ul created by Dominique) */
+.canvas ul {
+    margin-left: 20px; /* Ensure indentation */
+    list-style-type: disc; /* Ensure bullets */
+    padding-left: 20px; /* Standard practice for ul indentation */
+}
+
+.canvas ul li {
+    padding: 2px 0;
+}
+
+/* Columns (elements with class .column) */
+.column {
+    /* display: flex and flex-basis are set inline by JS */
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px dashed #ccc;
+    min-height: 50px;
+}
+
+/* Cards (elements with class .card) */
+.card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0; /* Keep existing margin */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 4px;
+    background-color: #fff; /* Ensure card background is distinct */
+}
+
+.card-title {
+    margin-top: 0;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333; /* Ensure title color */
+}
+
+.card-description {
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.card-button {
+    background-color: #28a745; /* Green, distinct from Dominique's button */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
     text-align: center;
+    font-size: 1em; /* Ensure consistent font size */
+}
+
+.card-button:hover {
+    background-color: #218838;
 }
