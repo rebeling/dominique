@@ -33,7 +33,15 @@ body {
     outline: none; /* Prevent browser default outline on contenteditable focus */
 }
 
-#saveButton {
+/* Hide editor-specific UI by default */
+#saveButton,
+#dominique-interface {
+    display: none;
+}
+
+/* Show editor-specific UI when in edit mode */
+.edit-mode-active #saveButton {
+    display: inline-block; /* Or block, depending on layout */
     padding: 10px 15px;
     background-color: #5cb85c;
     color: white;
@@ -55,6 +63,14 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     margin-top: 10px;
 }
+
+/*
+   No specific rule for `.edit-mode-active #dominique-interface { display: block; }`
+   is needed here. The default `#dominique-interface { display: none; }` (above)
+   ensures it's hidden initially.
+   JavaScript's `activateDominiqueInterface()` and deselection logic
+   will handle setting `display: block` or `display: none` in edit mode.
+*/
 
 #dominique-interface h3 {
     margin-top: 0;
@@ -83,6 +99,72 @@ body {
 #dominique-submit-button:hover {
     background-color: #0056b3;
 }
+
+/* Dominique Info Button & Help Text */
+#dominique-interface {
+    position: relative; /* Needed for absolute positioning of the info button */
+}
+
+#dominique-info-button {
+    position: absolute;
+    top: 10px; /* Adjusted for padding of parent */
+    right: 10px; /* Adjusted for padding of parent */
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #6c757d; /* Grey color for info */
+    color: white;
+    border: none;
+    font-weight: bold;
+    text-align: center;
+    line-height: 22px; /* Vertically center the 'i' */
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0; /* Remove any default padding */
+}
+
+#dominique-info-button:hover {
+    background-color: #5a6268;
+}
+
+#dominique-command-help {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 10px; /* Space below the input/submit button */
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 0.9em;
+}
+
+#dominique-command-help h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
+#dominique-command-help ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#dominique-command-help li {
+    padding: 4px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+#dominique-command-help li:last-child {
+    border-bottom: none;
+}
+
+#dominique-command-help code {
+    background-color: #e9ecef;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: "Courier New", Courier, monospace;
+}
+
 
 /* 3. Styling for Created Components */
 
