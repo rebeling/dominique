@@ -6,8 +6,18 @@
 </head>
 <body>
     <div class="ai-editor">
-        <!-- Content of the AI editor will go here -->
-        <p>This is the AI editor div.</p>
+        <div class="canvas">
+            <h1>Welcome to Your Page</h1>
+            <p>Click on any element to edit it with Dominique.</p>
+            <div>This is a sample editable div.</div>
+        </div>
+        <button id="saveButton">Save Page</button>
+        <div id="dominique-interface" style="display:none;">
+            <h3>Dominique Agent</h3>
+            <input type="text" id="dominique-command-input">
+            <button id="dominique-submit-button">Submit Command</button>
+        </div>
     </div>
+    <script src="editor.js" defer></script>
 </body>
 </html>
