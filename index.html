@@ -9,10 +9,9 @@
         <button id="saveButton">Save Page</button>
     </div>
 
-    <div class="ai-editor"> <!-- This remains as a wrapper for canvas if needed, or can be removed if .canvas is styled directly -->
-        <div class="canvas">
-            <h1>Welcome to Your Editable Page</h1>
-            <p>This is a sample page. If you're in edit mode (e.g., by adding "?edit=1" to the URL), click on any element to modify it with the Dominique agent. Try selecting text to make it bigger, or this paragraph and ask Dominique to "change text to: I've been changed!".</p>
+    <div class="canvas"> <!-- .ai-editor wrapper removed -->
+        <h1>Welcome to Your Editable Page</h1>
+        <p>This is a sample page. If you're in edit mode (e.g., by adding "?edit=1" to the URL), click on any element to modify it with the Dominique agent. Try selecting text to make it bigger, or this paragraph and ask Dominique to "change text to: I've been changed!".</p>
 
             <div style="display: flex; margin-top: 20px; margin-bottom: 20px; background-color: #f9f9f9; padding:15px; border-radius: 5px;">
                 <div style="flex-basis: 50%; padding-right: 15px; box-sizing: border-box;">
@@ -34,12 +33,14 @@
             <img src="https://via.placeholder.com/700x150.png?text=Sample+Banner+Image" alt="Sample Banner Image" style="max-width: 100%; height: auto; margin-top:20px; margin-bottom:20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 
             <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This final paragraph is also editable.</p>
-        </div>
-    </div>
+    </div> <!-- .canvas div ends -->
     <div id="dominique-interface">
         <div id="dominique-header">
             <span>Dominique Agent</span>
-            <button id="dominique-info-button">i</button>
+            <div> <!-- Wrapper for right-aligned buttons -->
+                <button id="dominique-info-button">i</button>
+                <button id="dominique-close-button" title="Close Dominique">&times;</button>
+            </div>
         </div>
         <div id="dominique-chat-history">
             <!-- Chat messages will be appended here by JS -->
