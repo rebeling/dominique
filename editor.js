@@ -1,8 +1,25 @@
 // JavaScript for AI Editor functionality
 document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const isEditMode = params.get('edit') === '1';
+
+    if (isEditMode) {
+        document.body.classList.add('edit-mode-active');
+        initializeEditor();
+    } else {
+        // Optionally, hide editor elements explicitly if not using CSS only
+        const editorElements = ['dominique-interface', 'saveButton'];
+        editorElements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+});
+
+function initializeEditor() {
     const canvas = document.querySelector('.canvas');
     const dominiqueInterface = document.getElementById('dominique-interface');
-    const commandInput = document.getElementById('dominique-command-input'); // Get commandInput here for activateDominiqueInterface
+    const commandInput = document.getElementById('dominique-command-input');
     let selectedElement = null;
 
     // Function to activate and focus Dominique's interface
@@ -11,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dominiqueInterface.style.display = 'block'; // Or 'flex'
             commandInput.focus();
         } else {
-            console.error("Dominique interface or command input not found for activation.");
+            console.error("Dominique interface or command input not found for activation in edit mode.");
         }
     }
 
@@ -19,24 +36,22 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.addEventListener('click', (event) => {
             const clickedElement = event.target;
 
-            // Prevent selection if clicking the canvas itself
             if (clickedElement === canvas) {
-                // If canvas background is clicked, deselect and hide interface
                 if (selectedElement) {
                     selectedElement.classList.remove('selected-highlight');
+                    if (selectedElement.contentEditable === 'true') {
+                        selectedElement.contentEditable = 'false';
+                    }
                     selectedElement = null;
                 }
-                dominiqueInterface.style.display = 'none';
+                if (dominiqueInterface) dominiqueInterface.style.display = 'none';
                 return;
             }
             
-            // If the clicked element is already selected, do nothing
             if (clickedElement === selectedElement) {
                 return;
             }
 
-            // If a different element is clicked (and it's not the canvas)
-            // Deselect previous element
             if (selectedElement) {
                 selectedElement.classList.remove('selected-highlight');
                 if (selectedElement.contentEditable === 'true') {
@@ -45,44 +60,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             selectedElement = clickedElement;
-            // Ensure the clicked element is a direct child of the canvas or deeper, but not the canvas itself
             if (canvas.contains(selectedElement) && selectedElement !== canvas) {
                  selectedElement.classList.add('selected-highlight');
                  if (isEditable(selectedElement)) {
                     selectedElement.contentEditable = 'true';
                  }
-                 activateDominiqueInterface(); // Call the new function
+                 activateDominiqueInterface();
                  console.log('Selected element:', selectedElement, 'Editable:', selectedElement.contentEditable);
             } else {
-                // Clicked outside of a selectable element or on the canvas itself, effectively deselect
-                if (selectedElement) { // This might be redundant if selectedElement was properly nulled above
+                if (selectedElement) {
                     selectedElement.classList.remove('selected-highlight');
                     if (selectedElement.contentEditable === 'true') {
                         selectedElement.contentEditable = 'false';
                     }
                 }
                 selectedElement = null;
-                dominiqueInterface.style.display = 'none';
+                if (dominiqueInterface) dominiqueInterface.style.display = 'none';
             }
         });
     } else {
-        console.error('Canvas element not found!');
+        console.error('Canvas element not found in edit mode!');
     }
 
-    // Dominique command submission
     const dominiqueSubmitButton = document.getElementById('dominique-submit-button');
-    // commandInput is already defined at the top of DOMContentLoaded
+    const dominiqueInfoButton = document.getElementById('dominique-info-button');
+    const dominiqueCommandHelp = document.getElementById('dominique-command-help');
 
     if (dominiqueSubmitButton && commandInput) {
         dominiqueSubmitButton.addEventListener('click', (event) => {
-            event.preventDefault(); // Good practice, though button is not in a form here
-
+            event.preventDefault();
             const commandText = commandInput.value.trim();
-
             if (selectedElement && commandText) {
-                executeCommand(selectedElement, commandText); // Call the new function
-                commandInput.value = ''; // Clear the input field
-                // Dominique interface remains open for further commands
+                executeCommand(selectedElement, commandText);
+                commandInput.value = '';
             } else if (!selectedElement) {
                 console.warn("No element selected. Please click on an element in the canvas first.");
             } else if (!commandText) {
@@ -90,11 +100,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     } else {
-        console.error('Dominique interface elements (submit button or command input) not found!');
+        if (!dominiqueSubmitButton) console.error('Dominique submit button not found in edit mode!');
+        if (!commandInput) console.error('Dominique command input not found in edit mode!');
     }
 
+    if (dominiqueInfoButton && dominiqueCommandHelp) {
+        // Populate help content
+        dominiqueCommandHelp.innerHTML = `
+            <h4>Available Commands:</h4>
+            <ul>
+                <li><code>make text bigger</code></li>
+                <li><code>make text smaller</code></li>
+                <li><code>center text</code></li>
+                <li><code>change text to: [your new text]</code></li>
+                <li><code>create list: item1, item2, ...</code></li>
+                <li><code>create card: Title | Description | Button Text</code></li>
+                <li><code>create two columns</code></li>
+            </ul>
+        `;
+
+        // Add event listener to toggle help display
+        dominiqueInfoButton.addEventListener('click', () => {
+            const isHelpVisible = dominiqueCommandHelp.style.display === 'block';
+            dominiqueCommandHelp.style.display = isHelpVisible ? 'none' : 'block';
+        });
+    } else {
+        if (!dominiqueInfoButton) console.error('Dominique info button not found in edit mode!');
+        if (!dominiqueCommandHelp) console.error('Dominique command help div not found in edit mode!');
+    }
+
+
     function executeCommand(element, commandString) {
-        console.log(`Executing command on element <${element.tagName.toLowerCase()}>: "${commandString}"`);
+        console.log(`Executing command on element <${element.tagName.toLowerCase()}>: "${commandString}" in edit mode`);
 
         if (commandString.toLowerCase() === "make text bigger") {
             const currentSize = window.getComputedStyle(element).fontSize;
@@ -263,14 +300,15 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Page saved.");
         });
     } else {
-        if (!saveButton) console.error('Save button not found!');
-        if (!canvas) console.error('Canvas element not found for saving!');
+        if (!saveButton) console.error('Save button not found in edit mode!');
+        if (!canvas) console.error('Canvas element not found for saving in edit mode!');
     }
 
-    function isEditable(element) {
+    // isEditable needs to be accessible by the canvas click listener within initializeEditor
+    window.isEditable = function(element) { // Make it global or pass it around
         if (!element) return false;
         const tagName = element.tagName.toLowerCase();
-        const nonEditableClasses = ['card', 'column', 'row']; // Classes that indicate structural elements
+        const nonEditableClasses = ['card', 'column', 'row']; 
         const editableTags = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'span', 'button'];
 
         if (editableTags.includes(tagName)) {
@@ -278,29 +316,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (tagName === 'div') {
-            // Check if it's a simple div, not a structural one
             for (const className of nonEditableClasses) {
                 if (element.classList.contains(className)) {
-                    return false; // It's a structural div, don't make the whole thing editable
+                    return false;
                 }
             }
-            // Check if it contains other block elements. If so, maybe not directly editable.
-            // This is a simple check; could be more sophisticated.
             const blockChildren = element.querySelectorAll('div, p, ul, h1, h2, h3, h4, h5, h6');
             if (blockChildren.length > 0) {
-                // If it's a div that's a direct child of .canvas and contains other blocks,
-                // it's likely a user-created container. Let's allow it.
-                // Otherwise, if it's deeper and has blocks, it might be part of a component.
-                if (element.parentElement === canvas && blockChildren.length > 0) {
+                if (element.parentElement === canvas && blockChildren.length > 0) { // canvas needs to be in scope or passed
                     return true;
                 }
-                // More refined: if it's a div like card-description, it should be editable
                 if (element.classList.contains('card-description')) return true;
-
                 return false; 
             }
-            return true; // Simple div with no block children or non-editable classes
+            return true;
         }
         return false;
     }
-});
+} // End of initializeEditor
