@@ -107,6 +107,7 @@ body {
     font-weight: 500;
     color: #333;
     cursor: move;
+    background: white;
 }
 
 #dominique-header > span {
