@@ -6,7 +6,7 @@
 </head>
 <body>
     <div id="editor-ui-container">
-        <button id="saveButton">Save Page</button>
+        <button id="saveButton" title="Save Page">&#128190;</button> 
     </div>
 
     <div class="canvas"> <!-- .ai-editor wrapper removed -->
@@ -30,13 +30,13 @@
                 <button class="card-button">Discover Features</button>
             </div>
 
-            <img src="https://via.placeholder.com/700x150.png?text=Sample+Banner+Image" alt="Sample Banner Image" style="max-width: 100%; height: auto; margin-top:20px; margin-bottom:20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <img src="https://placehold.co/600x400?text=Hello+World" alt="Hello World placeholder image" style="max-width: 100%; height: auto; margin-top:20px; margin-bottom:20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 
             <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This final paragraph is also editable.</p>
     </div> <!-- .canvas div ends -->
     <div id="dominique-interface">
         <div id="dominique-header">
-            <span>Dominique Agent</span>
+            <span>Dominique</span>
             <div> <!-- Wrapper for right-aligned buttons -->
                 <button id="dominique-info-button">i</button>
                 <button id="dominique-close-button" title="Close Dominique">&times;</button>
@@ -51,5 +51,6 @@
         </div>
     </div>
     <script src="editor.js" defer></script>
+    <div id="dominique-idle-indicator" title="Open Dominique" style="display: none;"></div>
 </body>
 </html>

@@ -70,7 +70,11 @@ body {
     top: 50%;
     right: 20px;
     transform: translateY(-50%); /* Vertical centering */
-    padding: 8px 15px;
+    padding: 6px 10px; /* Adjusted padding for icon */
+    font-size: 1.5em; /* Increase font size for icon */
+    line-height: 1; /* Ensure icon is centered vertically */
+    min-width: 40px; /* Ensure a decent clickable area */
+    text-align: center;
     background-color: #007bff;
     color: white;
     border: none;
@@ -86,15 +90,14 @@ body {
 #dominique-interface {
     display: none; 
     position: absolute; 
-    width: 400px; /* Changed from 320px to 400px */
-    max-height: 400px;
+    width: 400px; 
+    max-height: 450px; /* Slightly increased max-height for better usability */
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    /* box-shadow: 0 3px 10px rgba(255, 105, 180, 0.5); /* Pink shadow - REMOVED */
+    border: none; /* Removed border for a cleaner, more material look */
+    border-radius: 8px; /* Slightly larger, more modern radius */
+    /* box-shadow is handled by ::before */
     z-index: 999;
-    /* padding: 15px; /* Replaced by padding in individual sections */
-    display: flex; /* Use flex to structure header, chat, input area */
+    display: flex; 
     flex-direction: column;
 }
 
@@ -116,13 +119,18 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px;
-    border-bottom: 1px solid #eee;
-    font-weight: bold;
-    cursor: move; /* Add cursor to indicate draggable header */
+    padding: 12px 15px; /* Adjusted padding */
+    border-bottom: 1px solid #f0f0f0; /* Lighter border */
+    font-weight: 500; /* Material-like font weight */
+    color: #333; /* Darker text for better contrast on white */
+    cursor: move;
 }
 
-#dominique-header > div { /* Wrapper for info and close buttons */
+#dominique-header > span {
+    font-size: 1.1em; /* Slightly larger title */
+}
+
+#dominique-header > div { 
     display: flex;
     align-items: center;
 }
@@ -130,64 +138,114 @@ body {
 #dominique-close-button {
     background: transparent;
     border: none;
-    font-size: 1.8em; /* Make the '×' character larger */
-    padding: 0 5px; 
+    font-size: 1.6em; /* Slightly reduced for sleekness */
+    padding: 0; 
     line-height: 1; 
     cursor: pointer;
-    color: #6c757d; 
-    margin-left: 8px; /* Space from info button */
-    order: 10; /* Ensure it's last if more items were added to wrapper */
+    color: #aaa; /* Lighter icon color */
+    margin-left: 10px; 
+    order: 10; 
 }
 #dominique-close-button:hover {
-    color: #333;
+    color: #777; /* Darker on hover */
 }
 
 
 #dominique-chat-history {
-    flex-grow: 1; /* Takes up available vertical space */
+    flex-grow: 1; 
     overflow-y: auto;
-    padding: 10px 15px;
-    min-height: 100px; /* Minimum height before scrolling */
-    /* Max height is implicitly handled by #dominique-interface max-height and other flex children */
+    padding: 15px; /* Consistent padding */
+    min-height: 150px; /* Increased min-height */
+    background-color: #f9f9f9; /* Subtle background for chat area */
 }
 
 .chat-message {
-    margin-bottom: 8px;
+    margin-bottom: 10px; /* Slightly more margin */
     word-wrap: break-word;
-    padding: 6px 10px;
-    border-radius: 7px;
-    line-height: 1.4;
+    padding: 8px 12px; /* Adjusted padding */
+    border-radius: 12px; /* More rounded messages */
+    line-height: 1.45;
+    font-size: 0.95em;
 }
 
 .user-message {
-    text-align: right;
-    background-color: #dcf8c6; /* Light green for user */
-    margin-left: 20%;
+    text-align: left; /* User messages now also left-aligned for consistency */
+    background-color: #e3f2fd; /* Light blue for user */
+    color: #1e88e5; /* Darker blue text */
+    margin-left: 0; /* Remove specific margin */
+    margin-right: 15%; /* Keep some offset from right */
 }
 
 .system-message {
     text-align: left;
-    background-color: #f1f0f0; /* Light grey for system */
-    margin-right: 20%;
+    background-color: #f5f5f5; /* Slightly different grey for system */
+    color: #555;
+    margin-right: 0; /* Remove specific margin */
+    margin-left: 0; /* HTML messages (like help) should be full width */
 }
+
+/* System messages containing HTML (like help) might need more specific styling if any */
+.system-message h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.1em;
+}
+.system-message ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+.system-message li {
+    padding: 5px 0;
+    color: #444;
+}
+.system-message code {
+    background-color: #e0e0e0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "Courier New", Courier, monospace;
+    color: #d63384; /* Pinkish for code */
+}
+
 
 #dominique-input-area {
     display: flex;
-    padding: 10px 15px;
-    border-top: 1px solid #eee;
+    padding: 12px 15px; /* Adjusted padding */
+    border-top: 1px solid #f0f0f0; /* Lighter border */
+    background-color: #fff; /* Ensure input area is white */
 }
 
-#dominique-command-input { /* Already has some styles, this refines for flex context */
+#dominique-command-input { 
     flex-grow: 1;
-    margin-right: 8px;
-    padding: 8px 10px; /* Existing padding */
-    border: 1px solid #ccc; /* Existing border */
-    border-radius: 4px; /* Existing radius */
+    margin-right: 10px; /* Increased margin */
+    padding: 10px 12px; /* Adjusted padding */
+    border: none; /* Remove border for material style */
+    border-bottom: 1px solid #ddd; /* Underline style */
+    border-radius: 0; /* Flat bottom edge */
+    background-color: transparent;
+    font-size: 1em;
+    transition: border-color 0.2s ease-in-out;
+}
+#dominique-command-input:focus {
+    outline: none;
+    border-bottom-color: #007bff; /* Accent color on focus */
+    border-bottom-width: 2px; /* Thicker underline on focus */
 }
 
-#dominique-submit-button { /* Text changed to "Send" in HTML */
-    padding: 8px 15px; /* Existing padding */
-    /* background-color, color, border, border-radius, cursor are existing and fine */
+
+#dominique-submit-button { 
+    padding: 10px 18px; /* Adjusted padding */
+    background-color: #007bff; /* Primary action color */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Standard button radius */
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+#dominique-submit-button:hover {
+    background-color: #0056b3; /* Darker on hover */
 }
 
 
@@ -197,25 +255,24 @@ body {
 /* Dominique Info Button & Help Text - General Styles, position relative to #dominique-interface */
 /* Info button is now part of #dominique-header flex layout */
 #dominique-info-button {
-    /* position: absolute; Removed */
-    /* top: 10px; Removed */
-    /* right: 10px; Removed */
-    width: 22px;
-    height: 22px;
+    width: 24px; /* Slightly larger */
+    height: 24px; /* Slightly larger */
     border-radius: 50%;
-    background-color: #6c757d;
-    color: white;
-    border: none;
+    background-color: transparent; /* Transparent background */
+    color: #aaa; /* Lighter icon color */
+    border: 1px solid #ddd; /* Subtle border */
     font-weight: bold;
     text-align: center;
-    line-height: 22px;
+    line-height: 22px; /* Adjust for border */
     cursor: pointer;
     font-size: 14px;
     padding: 0;
+    transition: color 0.2s, border-color 0.2s;
 }
 
 #dominique-info-button:hover {
-    background-color: #5a6268;
+    color: #777; /* Darker on hover */
+    border-color: #bbb;
 }
 
 /* Styles for #dominique-command-help are now removed as the element is deleted. */
@@ -279,4 +336,32 @@ body {
 
 .card-button:hover {
     background-color: #218838;
+}
+
+#dominique-idle-indicator {
+    position: fixed;
+    bottom: 30px; 
+    right: 30px;  
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #007bff; /* Placeholder, mostly covered by glow */
+    cursor: pointer;
+    z-index: 998; 
+    display: none; /* Initially hidden, JS controls visibility */
+    /* position: relative; is not needed here as ::before is absolute to this fixed element */
+}
+
+#dominique-idle-indicator::before {
+  content: "";
+  position: absolute;
+  top: -8px; 
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  z-index: -1;
+  border-radius: 50%; 
+  background: linear-gradient(to right, red, blue); 
+  filter: blur(20px); 
+  opacity: 0.8; 
 }

@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('edit-mode-active');
         initializeEditor();
     } else {
-        const editorElements = ['dominique-interface', 'saveButton'];
+        const editorElements = ['dominique-interface', 'saveButton', 'dominique-idle-indicator'];
         editorElements.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.style.display = 'none';
@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Define help content string globally or within initializeEditor if preferred and passed around
 const COMMAND_HELP_HTML = `
     <h4>Available Commands:</h4>
     <ul>
@@ -40,68 +39,85 @@ function initializeEditor() {
     const dominiqueInfoButton = document.getElementById('dominique-info-button');
     const dominiqueSubmitButton = document.getElementById('dominique-submit-button');
     const dominiqueHeader = document.getElementById('dominique-header'); 
-    const dominiqueCloseButton = document.getElementById('dominique-close-button'); // New close button
+    const dominiqueCloseButton = document.getElementById('dominique-close-button');
+    const dominiqueIdleIndicator = document.getElementById('dominique-idle-indicator');
+    const saveButton = document.getElementById('saveButton'); // Get save button reference
 
     let isDragging = false;
     let initialMouseX, initialMouseY;
     let initialModalLeft, initialModalTop;
+    let lastDominiqueModalPosition = { top: '100px', left: 'calc(50% - 200px)' }; 
 
     function scrollToBottom(element) {
-        if (element) {
-            element.scrollTop = element.scrollHeight;
-        }
+        if (element) element.scrollTop = element.scrollHeight;
     }
 
     function appendMessage(text, type, isHtml = false) {
-        if (!dominiqueChatHistory) {
-            console.error("Chat history element not found!");
-            return;
-        }
+        if (!dominiqueChatHistory) return;
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('chat-message', type);
-        if (isHtml) {
-            messageDiv.innerHTML = text; 
-        } else {
-            messageDiv.textContent = text; 
-        }
+        if (isHtml) messageDiv.innerHTML = text;
+        else messageDiv.textContent = text; 
         dominiqueChatHistory.appendChild(messageDiv);
         scrollToBottom(dominiqueChatHistory);
     }
 
+    function showDominiqueModal() {
+        if (!dominiqueInterface) return;
+        dominiqueInterface.style.display = 'flex';
+        if (dominiqueIdleIndicator) dominiqueIdleIndicator.style.display = 'none';
+    }
+
+    function hideDominiqueModal(isClosing = false) {
+        if (!dominiqueInterface) return;
+        dominiqueInterface.style.display = 'none';
+        if (isClosing && selectedElement) { 
+            selectedElement.classList.remove('selected-highlight');
+            if (selectedElement.contentEditable === 'true') {
+                selectedElement.contentEditable = 'false';
+            }
+            selectedElement = null;
+        }
+        if (dominiqueIdleIndicator) dominiqueIdleIndicator.style.display = 'block'; 
+    }
+    
     function activateDominiqueInterface() {
-        if (!dominiqueInterface || !commandInput || !selectedElement) {
-            console.error("Dominique interface, command input, or selectedElement not found for activation.");
-            if (dominiqueInterface) dominiqueInterface.style.display = 'none'; 
+        if (!dominiqueInterface || !commandInput) { // selectedElement can be null when opening from idle
+            console.error("Dominique interface or command input not found for activation.");
             return;
         }
-        dominiqueInterface.style.display = 'flex'; 
-        const selectedRect = selectedElement.getBoundingClientRect();
-        const modalWidth = dominiqueInterface.offsetWidth;
-        const modalHeight = dominiqueInterface.offsetHeight;
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const scrollX = window.scrollX;
-        const scrollY = window.scrollY;
-        const offset = 10; 
-        let modalTop = selectedRect.top + scrollY;
-        let modalLeft = selectedRect.right + scrollX + offset;
-        if (modalLeft + modalWidth > viewportWidth + scrollX) {
-            modalLeft = selectedRect.left + scrollX - modalWidth - offset; 
-        }
-        if (modalLeft < scrollX) {
-            modalLeft = scrollX + offset; 
-        }
-        if (modalTop + modalHeight > viewportHeight + scrollY) {
-            modalTop = selectedRect.bottom + scrollY - modalHeight; 
-            if (modalTop < scrollY) { 
-                 modalTop = scrollY + offset; 
+
+        showDominiqueModal();
+
+        if (selectedElement) {
+            const selectedRect = selectedElement.getBoundingClientRect();
+            const modalWidth = dominiqueInterface.offsetWidth;
+            const modalHeight = dominiqueInterface.offsetHeight;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const scrollX = window.scrollX;
+            const scrollY = window.scrollY;
+            const offset = 10; 
+            let modalTop = selectedRect.top + scrollY;
+            let modalLeft = selectedRect.right + scrollX + offset;
+
+            if (modalLeft + modalWidth > viewportWidth + scrollX) {
+                modalLeft = selectedRect.left + scrollX - modalWidth - offset; 
             }
+            if (modalLeft < scrollX) modalLeft = scrollX + offset; 
+            
+            if (modalTop + modalHeight > viewportHeight + scrollY) {
+                modalTop = selectedRect.bottom + scrollY - modalHeight; 
+                if (modalTop < scrollY) modalTop = scrollY + offset; 
+            }
+            if (modalTop < scrollY) modalTop = scrollY + offset; 
+            
+            lastDominiqueModalPosition = { top: `${modalTop}px`, left: `${modalLeft}px` };
         }
-        if (modalTop < scrollY) {
-            modalTop = scrollY + offset; 
-        }
-        dominiqueInterface.style.top = `${modalTop}px`;
-        dominiqueInterface.style.left = `${modalLeft}px`;
+        
+        dominiqueInterface.style.top = lastDominiqueModalPosition.top;
+        dominiqueInterface.style.left = lastDominiqueModalPosition.left;
+        
         commandInput.focus();
         if (dominiqueChatHistory && dominiqueChatHistory.children.length === 0) {
             appendMessage("Dominique is ready. Select an element and type a command, or type 'help'.", "system-message");
@@ -111,47 +127,36 @@ function initializeEditor() {
     if (canvas) {
         canvas.addEventListener('click', (event) => {
             const clickedElement = event.target;
-
-            // If click is on the close button or info button, or inside dominique interface, do not deselect
             if (dominiqueInterface && (dominiqueInterface.contains(clickedElement) || clickedElement === dominiqueInterface)) {
                 return;
             }
-
             if (clickedElement === canvas) {
                 if (selectedElement) {
                     selectedElement.classList.remove('selected-highlight');
-                    if (selectedElement.contentEditable === 'true') {
-                        selectedElement.contentEditable = 'false';
-                    }
+                    if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
                     selectedElement = null;
                 }
-                if (dominiqueInterface) dominiqueInterface.style.display = 'none';
+                hideDominiqueModal(); 
                 return;
             }
             if (clickedElement === selectedElement) return;
             if (selectedElement) {
                 selectedElement.classList.remove('selected-highlight');
-                if (selectedElement.contentEditable === 'true') {
-                    selectedElement.contentEditable = 'false';
-                }
+                if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
             }
             selectedElement = clickedElement;
             if (canvas.contains(selectedElement) && selectedElement !== canvas) {
                  selectedElement.classList.add('selected-highlight');
-                 if (isEditable(selectedElement)) {
-                    selectedElement.contentEditable = 'true';
-                 }
+                 if (isEditable(selectedElement)) selectedElement.contentEditable = 'true';
                  activateDominiqueInterface();
                  console.log('Selected element:', selectedElement, 'Editable:', selectedElement.contentEditable);
             } else {
                 if (selectedElement) {
                     selectedElement.classList.remove('selected-highlight');
-                    if (selectedElement.contentEditable === 'true') {
-                        selectedElement.contentEditable = 'false';
-                    }
+                    if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
                 }
                 selectedElement = null;
-                if (dominiqueInterface) dominiqueInterface.style.display = 'none';
+                hideDominiqueModal(); 
             }
         });
     } else {
@@ -195,35 +200,37 @@ function initializeEditor() {
         if (!dominiqueInfoButton) console.error('Dominique info button not found in edit mode!');
     }
 
-    // Add event listener for the new close button
     if (dominiqueCloseButton && dominiqueInterface) {
         dominiqueCloseButton.addEventListener('click', () => {
-            dominiqueInterface.style.display = 'none';
-            if (selectedElement) {
-                selectedElement.classList.remove('selected-highlight');
-                if (selectedElement.contentEditable === 'true') {
-                    selectedElement.contentEditable = 'false';
-                }
-                selectedElement = null;
-            }
-            appendMessage("Dominique closed.", "system-message"); // Optional feedback
+            hideDominiqueModal(true); 
+            appendMessage("Dominique closed.", "system-message");
         });
     } else {
         if (!dominiqueCloseButton) console.error('Dominique close button not found in edit mode!');
     }
 
+    if (dominiqueIdleIndicator && dominiqueInterface) {
+        dominiqueIdleIndicator.addEventListener('click', () => {
+            activateDominiqueInterface(); 
+            appendMessage("Dominique is back!", "system-message");
+        });
+    } else {
+        if (!dominiqueIdleIndicator) console.error('Dominique idle indicator not found!');
+    }
+
+    if (dominiqueIdleIndicator && !selectedElement) {
+        dominiqueIdleIndicator.style.display = 'block';
+    }
+    if (dominiqueInterface) { 
+         dominiqueInterface.style.display = 'none';
+    }
 
     if (dominiqueHeader && dominiqueInterface) {
         dominiqueHeader.addEventListener('mousedown', (e) => {
-            // Prevent dragging if mousedown is on info or close button
-            if (e.target === dominiqueInfoButton || e.target === dominiqueCloseButton) {
-                return;
-            }
+            if (e.target === dominiqueInfoButton || e.target === dominiqueCloseButton) return;
             isDragging = true;
-            initialMouseX = e.clientX;
-            initialMouseY = e.clientY;
-            initialModalLeft = dominiqueInterface.offsetLeft;
-            initialModalTop = dominiqueInterface.offsetTop;
+            initialMouseX = e.clientX; initialMouseY = e.clientY;
+            initialModalLeft = dominiqueInterface.offsetLeft; initialModalTop = dominiqueInterface.offsetTop;
             document.body.style.userSelect = 'none'; 
             dominiqueHeader.style.cursor = 'grabbing'; 
             document.addEventListener('mousemove', onDragMouseMove);
@@ -232,20 +239,15 @@ function initializeEditor() {
         });
         function onDragMouseMove(e) {
             if (!isDragging) return;
-            const deltaX = e.clientX - initialMouseX;
-            const deltaY = e.clientY - initialMouseY;
-            let newLeft = initialModalLeft + deltaX;
-            let newTop = initialModalTop + deltaY;
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const modalWidth = dominiqueInterface.offsetWidth;
-            const modalHeight = dominiqueInterface.offsetHeight;
-            if (newLeft < 0) newLeft = 0;
-            if (newTop < 0) newTop = 0; 
+            const deltaX = e.clientX - initialMouseX; const deltaY = e.clientY - initialMouseY;
+            let newLeft = initialModalLeft + deltaX; let newTop = initialModalTop + deltaY;
+            const viewportWidth = window.innerWidth; const viewportHeight = window.innerHeight;
+            const modalWidth = dominiqueInterface.offsetWidth; const modalHeight = dominiqueInterface.offsetHeight;
+            if (newLeft < 0) newLeft = 0; if (newTop < 0) newTop = 0; 
             if (newLeft + modalWidth > viewportWidth) newLeft = viewportWidth - modalWidth;
             if (newTop + modalHeight > viewportHeight) newTop = viewportHeight - modalHeight;
-            dominiqueInterface.style.left = newLeft + 'px';
-            dominiqueInterface.style.top = newTop + 'px';
+            dominiqueInterface.style.left = newLeft + 'px'; dominiqueInterface.style.top = newTop + 'px';
+            lastDominiqueModalPosition = { top: dominiqueInterface.style.top, left: dominiqueInterface.style.left }; 
         }
         function onDragMouseUp() {
             if (!isDragging) return;
@@ -328,24 +330,35 @@ function initializeEditor() {
         console.log(`Created card in element <${element.tagName.toLowerCase()}> with title: "${title}"`);
     }
 
-    const saveButton = document.getElementById('saveButton');
+    // Updated Save Page functionality
     if (saveButton && canvas) { 
         saveButton.addEventListener('click', () => {
             if (selectedElement) {
                 selectedElement.classList.remove('selected-highlight');
                 if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
-                dominiqueInterface.style.display = 'none';
-                selectedElement = null;
+                // Do not hide Dominique interface on save, let user explicitly close it
+                // dominiqueInterface.style.display = 'none'; 
+                // selectedElement = null; // Keep element selected
             }
-            const canvasContent = canvas.innerHTML;
-            const pageTitle = "My Saved Page"; 
-            const fullHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${pageTitle}</title></head><body>${canvasContent}</body></html>`;
-            const blob = new Blob([fullHtml], { type: 'text/html' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob); link.download = 'saved_page.html';
-            document.body.appendChild(link); link.click();
-            document.body.removeChild(link); URL.revokeObjectURL(link.href); 
-            console.log("Page saved.");
+            
+            console.log("Attempting to save page content via API...");
+            appendMessage("Saving page content...", "system-message"); // Feedback in Dominique chat
+
+            // Simulate API call
+            setTimeout(() => {
+                console.log("Page saved successfully via API!");
+                appendMessage("Page content saved successfully (mock API).", "system-message");
+                
+                // Optional: Visual feedback on the save button itself
+                const originalButtonText = saveButton.innerHTML;
+                saveButton.innerHTML = "&#10003;"; // Checkmark icon
+                saveButton.style.backgroundColor = "#28a745"; // Green for success
+                setTimeout(() => {
+                    saveButton.innerHTML = originalButtonText; // Revert to floppy icon
+                    saveButton.style.backgroundColor = "#007bff"; // Revert to original blue
+                }, 2500);
+
+            }, 1500);
         });
     } else {
         if (!saveButton) console.error('Save button not found in edit mode!');
