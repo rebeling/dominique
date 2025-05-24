@@ -25,6 +25,7 @@ const COMMAND_HELP_HTML = `
         <li><code>create list: item1, item2, ...</code></li>
         <li><code>create card: Title | Description | Button Text</code></li>
         <li><code>create two columns</code></li>
+        <li><code>hide for X seconds</code> (aliases: minimize for X s)</li>
         <li><em>Type 'help' to see this list again.</em></li>
     </ul>
 `;
@@ -34,6 +35,7 @@ function initializeEditor() {
     const dominiqueInterface = document.getElementById('dominique-interface');
     const commandInput = document.getElementById('dominique-command-input');
     let selectedElement = null;
+    let hoveredElement = null; 
 
     const dominiqueChatHistory = document.getElementById('dominique-chat-history');
     const dominiqueInfoButton = document.getElementById('dominique-info-button');
@@ -41,12 +43,13 @@ function initializeEditor() {
     const dominiqueHeader = document.getElementById('dominique-header'); 
     const dominiqueCloseButton = document.getElementById('dominique-close-button');
     const dominiqueIdleIndicator = document.getElementById('dominique-idle-indicator');
-    const saveButton = document.getElementById('saveButton'); // Get save button reference
+    const saveButton = document.getElementById('saveButton');
 
     let isDragging = false;
     let initialMouseX, initialMouseY;
     let initialModalLeft, initialModalTop;
     let lastDominiqueModalPosition = { top: '100px', left: 'calc(50% - 200px)' }; 
+    let isDominiqueTemporarilyHidden = false; 
 
     function scrollToBottom(element) {
         if (element) element.scrollTop = element.scrollHeight;
@@ -78,17 +81,19 @@ function initializeEditor() {
             }
             selectedElement = null;
         }
-        if (dominiqueIdleIndicator) dominiqueIdleIndicator.style.display = 'block'; 
+        if (dominiqueIdleIndicator && !isDominiqueTemporarilyHidden) {
+             dominiqueIdleIndicator.style.display = 'block'; 
+        } else if (dominiqueIdleIndicator && isDominiqueTemporarilyHidden && isClosing) {
+             dominiqueIdleIndicator.style.display = 'block';
+        }
     }
     
     function activateDominiqueInterface() {
-        if (!dominiqueInterface || !commandInput) { // selectedElement can be null when opening from idle
+        if (!dominiqueInterface || !commandInput) { 
             console.error("Dominique interface or command input not found for activation.");
             return;
         }
-
         showDominiqueModal();
-
         if (selectedElement) {
             const selectedRect = selectedElement.getBoundingClientRect();
             const modalWidth = dominiqueInterface.offsetWidth;
@@ -100,37 +105,56 @@ function initializeEditor() {
             const offset = 10; 
             let modalTop = selectedRect.top + scrollY;
             let modalLeft = selectedRect.right + scrollX + offset;
-
             if (modalLeft + modalWidth > viewportWidth + scrollX) {
                 modalLeft = selectedRect.left + scrollX - modalWidth - offset; 
             }
             if (modalLeft < scrollX) modalLeft = scrollX + offset; 
-            
             if (modalTop + modalHeight > viewportHeight + scrollY) {
                 modalTop = selectedRect.bottom + scrollY - modalHeight; 
                 if (modalTop < scrollY) modalTop = scrollY + offset; 
             }
             if (modalTop < scrollY) modalTop = scrollY + offset; 
-            
             lastDominiqueModalPosition = { top: `${modalTop}px`, left: `${modalLeft}px` };
         }
-        
         dominiqueInterface.style.top = lastDominiqueModalPosition.top;
         dominiqueInterface.style.left = lastDominiqueModalPosition.left;
-        
         commandInput.focus();
         if (dominiqueChatHistory && dominiqueChatHistory.children.length === 0) {
-            appendMessage("Dominique is ready. Select an element and type a command, or type 'help'.", "system-message");
+            appendMessage("I'm ready! How can I help you? (Type 'help' for commands)", "system-message");
         }
     }
 
     if (canvas) {
+        canvas.addEventListener('mouseover', (event) => {
+            const target = event.target;
+            if (target === canvas || (dominiqueInterface && dominiqueInterface.contains(target)) || target === dominiqueInterface) {
+                return; 
+            }
+            if (target !== selectedElement && canvas.contains(target)) {
+                if (hoveredElement && hoveredElement !== target) {
+                    hoveredElement.classList.remove('selected-highlight');
+                }
+                hoveredElement = target;
+                hoveredElement.classList.add('selected-highlight');
+            }
+        });
+        canvas.addEventListener('mouseout', (event) => {
+            const target = event.target;
+            if (hoveredElement === target && target !== selectedElement) {
+                hoveredElement.classList.remove('selected-highlight');
+                hoveredElement = null;
+            }
+        });
         canvas.addEventListener('click', (event) => {
             const clickedElement = event.target;
             if (dominiqueInterface && (dominiqueInterface.contains(clickedElement) || clickedElement === dominiqueInterface)) {
-                return;
+                return; 
             }
-            if (clickedElement === canvas) {
+            if (hoveredElement && hoveredElement !== clickedElement) {
+                hoveredElement.classList.remove('selected-highlight');
+                hoveredElement = null;
+            }
+            if (clickedElement === canvas) { 
                 if (selectedElement) {
                     selectedElement.classList.remove('selected-highlight');
                     if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
@@ -139,19 +163,19 @@ function initializeEditor() {
                 hideDominiqueModal(); 
                 return;
             }
-            if (clickedElement === selectedElement) return;
+            if (clickedElement === selectedElement) return; 
             if (selectedElement) {
                 selectedElement.classList.remove('selected-highlight');
                 if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
             }
             selectedElement = clickedElement;
             if (canvas.contains(selectedElement) && selectedElement !== canvas) {
-                 selectedElement.classList.add('selected-highlight');
+                 selectedElement.classList.add('selected-highlight'); 
                  if (isEditable(selectedElement)) selectedElement.contentEditable = 'true';
                  activateDominiqueInterface();
                  console.log('Selected element:', selectedElement, 'Editable:', selectedElement.contentEditable);
-            } else {
-                if (selectedElement) {
+            } else { 
+                if (selectedElement) { 
                     selectedElement.classList.remove('selected-highlight');
                     if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
                 }
@@ -168,21 +192,20 @@ function initializeEditor() {
             event.preventDefault();
             const commandText = commandInput.value.trim();
             if (!commandText) {
-                appendMessage("Command input is empty. Please type a command.", "system-message");
+                appendMessage("I'm waiting for your command. Please tell me what you'd like to do.", "system-message");
                 return;
             }
-            if (!selectedElement && commandText.toLowerCase() !== "help") { 
-                appendMessage("No element selected. Please click on an element in the canvas first, or type 'help'.", "system-message");
+            const isHideCommand = /^(hide|minimize)(?: yourself)? for (\d+)\s*(s|seconds)?$/i.test(commandText);
+            if (!selectedElement && commandText.toLowerCase() !== "help" && !isHideCommand ) { 
+                appendMessage("I need an element selected to work on. Please click on an element in the canvas, or type 'help'.", "system-message");
                 return;
             }
             appendMessage(commandText, "user-message"); 
             if (commandText.toLowerCase() === "help") {
+                appendMessage("Here are the commands I understand:", "system-message");
                 appendMessage(COMMAND_HELP_HTML, "system-message", true); 
-            } else if (selectedElement) { 
-                executeCommand(selectedElement, commandText);
-                appendMessage(`Command processed: "${commandText}"`, "system-message"); 
             } else {
-                appendMessage("Please select an element to apply this command or type 'help'.", "system-message");
+                executeCommand(selectedElement, commandText); 
             }
             commandInput.value = ''; 
             commandInput.focus(); 
@@ -194,6 +217,7 @@ function initializeEditor() {
 
     if (dominiqueInfoButton) { 
         dominiqueInfoButton.addEventListener('click', () => {
+            appendMessage("Here are the commands I understand:", "system-message");
             appendMessage(COMMAND_HELP_HTML, "system-message", true); 
         });
     } else {
@@ -202,8 +226,9 @@ function initializeEditor() {
 
     if (dominiqueCloseButton && dominiqueInterface) {
         dominiqueCloseButton.addEventListener('click', () => {
+            isDominiqueTemporarilyHidden = false; 
             hideDominiqueModal(true); 
-            appendMessage("Dominique closed.", "system-message");
+            appendMessage("I've closed for now. Click the glowing circle to bring me back!", "system-message");
         });
     } else {
         if (!dominiqueCloseButton) console.error('Dominique close button not found in edit mode!');
@@ -211,14 +236,15 @@ function initializeEditor() {
 
     if (dominiqueIdleIndicator && dominiqueInterface) {
         dominiqueIdleIndicator.addEventListener('click', () => {
+            if (isDominiqueTemporarilyHidden) return; 
             activateDominiqueInterface(); 
-            appendMessage("Dominique is back!", "system-message");
+            appendMessage("I'm back! How can I assist?", "system-message");
         });
     } else {
         if (!dominiqueIdleIndicator) console.error('Dominique idle indicator not found!');
     }
 
-    if (dominiqueIdleIndicator && !selectedElement) {
+    if (dominiqueIdleIndicator && !selectedElement && !isDominiqueTemporarilyHidden) {
         dominiqueIdleIndicator.style.display = 'block';
     }
     if (dominiqueInterface) { 
@@ -263,39 +289,91 @@ function initializeEditor() {
     }
 
     function executeCommand(element, commandString) {
-        console.log(`Executing command on element <${element.tagName.toLowerCase()}>: "${commandString}" in edit mode`);
-        if (commandString.toLowerCase() === "make text bigger") {
-            const currentSize = window.getComputedStyle(element).fontSize;
-            if (currentSize) element.style.fontSize = (parseFloat(currentSize) + 2) + 'px';
-            else element.style.fontSize = '18px'; 
-        } else if (commandString.toLowerCase() === "make text smaller") {
-            const currentSize = window.getComputedStyle(element).fontSize;
-            if (currentSize && parseFloat(currentSize) > 2) element.style.fontSize = (parseFloat(currentSize) - 2) + 'px';
-            else if (currentSize && parseFloat(currentSize) <=2 ) console.warn("Text is already too small to reduce further.");
-            else element.style.fontSize = '14px'; 
-        } else if (commandString.toLowerCase() === "center text") {
-            element.style.textAlign = 'center';
-        } else if (commandString.toLowerCase().startsWith("change text to: ")) {
-            const newText = commandString.substring("change text to: ".length).trim();
-            if (newText) element.innerText = newText;
-            else console.warn("No text provided for 'change text to' command.");
-        } else if (commandString.toLowerCase().startsWith("create list: ")) {
-            const itemsString = commandString.substring("create list: ".length).trim();
-            const items = itemsString.split(',').map(item => item.trim()).filter(item => item);
-            if (items.length > 0) {
-                element.innerHTML = ''; 
-                const ul = document.createElement('ul');
-                items.forEach(itemText => { const li = document.createElement('li'); li.textContent = itemText; ul.appendChild(li); });
-                element.appendChild(ul);
-            } else console.warn("No items provided for 'create list' command. Format: create list: item1, item2");
-        } else if (commandString.toLowerCase() === "create two columns") {
-            createTwoColumns(element);
-        } else if (commandString.toLowerCase().startsWith("create card: ")) {
-            const paramsString = commandString.substring("create card: ".length).trim();
-            const params = paramsString.split('|').map(p => p.trim());
-            if (params.length === 3) createCard(element, params[0], params[1], params[2]);
-            else console.warn("Invalid format for 'create card'. Expected: create card: Title | Description | Button Text");
-        } else console.error("Unknown command: " + commandString);
+        const hideCommandRegex = /^(hide|minimize)(?: yourself)? for (\d+)\s*(s|seconds)?$/i;
+        const hideMatch = commandString.match(hideCommandRegex);
+
+        if (hideMatch) {
+            const seconds = parseInt(hideMatch[2], 10);
+            if (seconds > 0) {
+                appendMessage(`Okay, I will hide for ${seconds} seconds.`, "system-message");
+                isDominiqueTemporarilyHidden = true; 
+                hideDominiqueModal(true); 
+                if(dominiqueIdleIndicator) dominiqueIdleIndicator.style.display = 'block';
+                setTimeout(() => {
+                    const stillIdle = dominiqueIdleIndicator && dominiqueIdleIndicator.style.display === 'block';
+                    isDominiqueTemporarilyHidden = false; 
+                    if (stillIdle) { 
+                        if (dominiqueIdleIndicator) dominiqueIdleIndicator.style.display = 'none';
+                        activateDominiqueInterface(); 
+                        appendMessage("I am back!", "system-message");
+                    } else {
+                        console.log("Timed hide expired, but Dominique was not in the expected idle state. No automatic action taken.");
+                    }
+                }, seconds * 1000);
+            } else {
+                appendMessage("Please tell me for how many seconds I should hide.", "system-message");
+            }
+        } else if (element) { 
+            let commandSuccessfullyProcessed = true; 
+            console.log(`Executing command on element <${element.tagName.toLowerCase()}>: "${commandString}" in edit mode`);
+            if (commandString.toLowerCase() === "make text bigger") {
+                const currentSize = window.getComputedStyle(element).fontSize;
+                if (currentSize) element.style.fontSize = (parseFloat(currentSize) + 2) + 'px';
+                else element.style.fontSize = '18px'; 
+            } else if (commandString.toLowerCase() === "make text smaller") {
+                const currentSize = window.getComputedStyle(element).fontSize;
+                if (currentSize && parseFloat(currentSize) > 2) element.style.fontSize = (parseFloat(currentSize) - 2) + 'px';
+                else if (currentSize && parseFloat(currentSize) <=2 ) {
+                    console.warn("Text is already too small to reduce further.");
+                    appendMessage("I can't make the text any smaller.", "system-message");
+                    commandSuccessfullyProcessed = false;
+                }
+                else element.style.fontSize = '14px'; 
+            } else if (commandString.toLowerCase() === "center text") {
+                element.style.textAlign = 'center';
+            } else if (commandString.toLowerCase().startsWith("change text to: ")) {
+                const newText = commandString.substring("change text to: ".length).trim();
+                if (newText) element.innerText = newText;
+                else {
+                    console.warn("No text provided for 'change text to' command.");
+                    appendMessage("It looks like you wanted to change the text, but didn't provide the new text.", "system-message");
+                    commandSuccessfullyProcessed = false;
+                }
+            } else if (commandString.toLowerCase().startsWith("create list: ")) {
+                const itemsString = commandString.substring("create list: ".length).trim();
+                const items = itemsString.split(',').map(item => item.trim()).filter(item => item);
+                if (items.length > 0) {
+                    element.innerHTML = ''; 
+                    const ul = document.createElement('ul');
+                    items.forEach(itemText => { const li = document.createElement('li'); li.textContent = itemText; ul.appendChild(li); });
+                    element.appendChild(ul);
+                } else {
+                    console.warn("No items provided for 'create list' command. Format: create list: item1, item2");
+                    appendMessage("I can create a list for you, but I need the items. For example: create list: apples, bananas, cherries.", "system-message");
+                    commandSuccessfullyProcessed = false;
+                }
+            } else if (commandString.toLowerCase() === "create two columns") {
+                createTwoColumns(element);
+            } else if (commandString.toLowerCase().startsWith("create card: ")) {
+                const paramsString = commandString.substring("create card: ".length).trim();
+                const params = paramsString.split('|').map(p => p.trim());
+                if (params.length === 3) createCard(element, params[0], params[1], params[2]);
+                else {
+                    console.warn("Invalid format for 'create card'. Expected: create card: Title | Description | Button Text");
+                    appendMessage("To create a card, I need the title, description, and button text, separated by '|'. For example: create card: My Title | My description here | Click Me", "system-message");
+                    commandSuccessfullyProcessed = false;
+                }
+            } else {
+                console.error("Unknown command: " + commandString);
+                appendMessage(`I'm not sure how to process the command: "${commandString}"`, "system-message");
+                commandSuccessfullyProcessed = false;
+            }
+            if (commandSuccessfullyProcessed) {
+                appendMessage(`Okay, I've executed: "${commandString}"`, "system-message");
+            }
+        } else if (!hideMatch) { 
+             appendMessage("I need an element selected to work on for that command. Please click on an element in the canvas.", "system-message");
+        }
     }
 
     function createTwoColumns(element) {
@@ -330,34 +408,20 @@ function initializeEditor() {
         console.log(`Created card in element <${element.tagName.toLowerCase()}> with title: "${title}"`);
     }
 
-    // Updated Save Page functionality
     if (saveButton && canvas) { 
         saveButton.addEventListener('click', () => {
-            if (selectedElement) {
-                selectedElement.classList.remove('selected-highlight');
-                if (selectedElement.contentEditable === 'true') selectedElement.contentEditable = 'false';
-                // Do not hide Dominique interface on save, let user explicitly close it
-                // dominiqueInterface.style.display = 'none'; 
-                // selectedElement = null; // Keep element selected
-            }
-            
             console.log("Attempting to save page content via API...");
-            appendMessage("Saving page content...", "system-message"); // Feedback in Dominique chat
-
-            // Simulate API call
+            appendMessage("I'm saving the page content now...", "system-message"); 
             setTimeout(() => {
                 console.log("Page saved successfully via API!");
-                appendMessage("Page content saved successfully (mock API).", "system-message");
-                
-                // Optional: Visual feedback on the save button itself
-                const originalButtonText = saveButton.innerHTML;
-                saveButton.innerHTML = "&#10003;"; // Checkmark icon
-                saveButton.style.backgroundColor = "#28a745"; // Green for success
+                appendMessage("I've saved the page content successfully (mock API).", "system-message");
+                const originalButtonText = saveButton.innerHTML; // This is '💾'
+                saveButton.innerHTML = "&#10003;"; 
+                saveButton.style.backgroundColor = "#28a745"; 
                 setTimeout(() => {
-                    saveButton.innerHTML = originalButtonText; // Revert to floppy icon
-                    saveButton.style.backgroundColor = "#007bff"; // Revert to original blue
+                    saveButton.innerHTML = originalButtonText; 
+                    saveButton.style.backgroundColor = ""; // Revert to CSS default (gray)
                 }, 2500);
-
             }, 1500);
         });
     } else {

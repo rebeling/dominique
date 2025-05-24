@@ -5,10 +5,9 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <div id="editor-ui-container">
-        <button id="saveButton" title="Save Page">&#128190;</button> 
-    </div>
-
+    <header id="page-header">
+        <h1>Interact with Dominique</h1>
+    </header>
     <div class="canvas"> <!-- .ai-editor wrapper removed -->
         <h1>Welcome to Your Editable Page</h1>
         <p>This is a sample page. If you're in edit mode (e.g., by adding "?edit=1" to the URL), click on any element to modify it with the Dominique agent. Try selecting text to make it bigger, or this paragraph and ask Dominique to "change text to: I've been changed!".</p>
@@ -30,14 +29,30 @@
                 <button class="card-button">Discover Features</button>
             </div>
 
-            <img src="https://placehold.co/600x400?text=Hello+World" alt="Hello World placeholder image" style="max-width: 100%; height: auto; margin-top:20px; margin-bottom:20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <img src="https://unsplash.com/photos/W1F9g0LSVrg/download?force=true&w=800" alt="Underwater view of the ocean with a mountain in the background - Photo by Niklas Jonasson" style="max-width: 100%; height: auto; margin-top:20px; margin-bottom:20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div class="image-description">
+                Photo by <a href="https://unsplash.com/@niklasjonasson" target="_blank" rel="noopener noreferrer">Niklas Jonasson</a>
+                on <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>.
+                <br>
+                Underwater view of the ocean with a mountain in the background. Location: Bjuröklubb, Sverige.
+            </div>
 
             <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This final paragraph is also editable.</p>
     </div> <!-- .canvas div ends -->
+
+    <footer id="page-footer">
+        <p>
+            <a href="#" class="footer-link">Link 1 (Placeholder)</a> |
+            <a href="#" class="footer-link">Link 2 (Placeholder)</a> |
+            <a href="#" class="footer-link">Link 3 (Placeholder)</a>
+        </p>
+    </footer>
+
     <div id="dominique-interface">
         <div id="dominique-header">
             <span>Dominique</span>
             <div> <!-- Wrapper for right-aligned buttons -->
+                <button id="saveButton" title="Save Page">&#128190;</button>
                 <button id="dominique-info-button">i</button>
                 <button id="dominique-close-button" title="Close Dominique">&times;</button>
             </div>
