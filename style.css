@@ -2,45 +2,49 @@
 body {
     font-family: sans-serif;
     margin: 0;
-    padding: 0; 
-    background-image: url('https://images.unsplash.com/photo-1511884642898-4c92249e20b6?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    padding: 0;
+    background-image: url("https://images.unsplash.com/photo-1511884642898-4c92249e20b6?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    min-height: 100vh; 
+    min-height: 100vh;
 }
 
 #page-header {
-    padding: 20px 0; 
-    text-align: center; 
+    padding: 20px 0;
+    text-align: center;
+    height: 142px;
 }
 
 #page-header h1 {
-    font-size: 2.5em; 
-    color: #333;    
-    margin: 0;      
 }
 
 .canvas {
     width: 800px;
-    margin: 0 auto 20px auto; /* Top margin 0, horizontal auto, bottom 20px */
+    margin: 0 auto 142px auto; /* Top margin 0, horizontal auto, bottom 20px */
     border: 1px solid #ccc;
-    padding: 20px; 
+    padding: 20px;
     min-height: 200px;
-    background-color: #fff; 
-    box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     /* border-radius: 8px; /* Removed */
 }
 
-.canvas img { /* Styling for the new image */
+.canvas h1 {
+    margin: -94px 0 40px 0;
+    font-size: 42px;
+}
+
+.canvas img {
+    /* Styling for the new image */
     width: 100%;
     height: auto;
     display: block;
     margin-top: 15px; /* Existing inline style was 20px, consolidate here */
     margin-bottom: 10px; /* Space before description */
     border-radius: 5px; /* Existing inline style */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Existing inline style */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Existing inline style */
 }
 
 .image-description {
@@ -52,162 +56,134 @@ body {
     margin-bottom: 15px; /* Space after description */
 }
 
-.canvas > * { 
+.canvas > * {
     padding: 10px;
     margin: 5px 0;
-    border: 1px dashed transparent; 
+    border: 1px dashed transparent;
 }
 
 .selected-highlight {
     border: 1px solid dodgerblue !important;
     box-shadow: 0 0 3px dodgerblue;
-    outline: none; 
+    outline: none;
 }
 
 /* #editor-ui-container rules removed */
 
 /* Dominique's Interface - Styled as a modal */
 #dominique-interface {
-    display: none; 
-    position: absolute; 
-    width: 400px; 
-    max-height: 450px; 
+    display: none;
+    position: absolute;
+    width: 400px;
+    max-height: 450px;
     background-color: #fff;
-    border: none; 
-    border-radius: 8px; 
+    border: none;
+    border-radius: 8px;
     z-index: 999;
-    display: flex; 
+    display: flex;
     flex-direction: column;
 }
 
 #dominique-interface::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  z-index: -1; 
-  border-radius: 20px; 
-  background: linear-gradient(to right, red, blue);
-  filter: blur(30px);
-  opacity: 0.9;
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: -1;
+    border-radius: 20px;
+    background: linear-gradient(to right, red, blue);
+    filter: blur(30px);
+    opacity: 0.9;
 }
 
 #dominique-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px; 
-    border-bottom: 1px solid #f0f0f0; 
-    font-weight: 500; 
-    color: #333; 
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 500;
+    color: #333;
     cursor: move;
 }
 
 #dominique-header > span {
-    font-size: 1.1em; 
+    font-size: 1.1em;
 }
 
 /* Wrapper for header icons */
-#dominique-header > div { 
+#dominique-header > div {
     display: flex;
     align-items: center;
 }
 
 /* Save button within Dominique header */
 #dominique-header #saveButton {
-    background-color: #adb5bd; /* Gray background */
-    color: #fff; /* White icon */
-    border: none;
-    padding: 4px 8px;    
-    font-size: 1.2em;     
-    line-height: 1;
-    border-radius: 4px;   
     cursor: pointer;
-    margin-right: 8px;    /* Space before info button */
+    margin-right: 8px; /* Space before info button */
     order: 1; /* Save button first */
-    transition: background-color 0.2s ease-in-out;
+    background: none;
+    border: unset;
 }
 #dominique-header #saveButton:hover {
-    background-color: #9fa6ae; /* Darker gray on hover */
 }
 
 /* Info button adjustments for header context */
 #dominique-header #dominique-info-button {
-    width: auto; 
-    height: auto; 
-    min-width: 24px; 
-    min-height: 24px;
-    border-radius: 4px; 
-    background-color: transparent; 
-    color: #aaa; 
-    border: 1px solid #ddd; 
-    font-weight: bold;
-    text-align: center;
-    line-height: 1; 
     cursor: pointer;
-    font-size: 1.2em; 
-    padding: 4px 8px; 
-    transition: color 0.2s, border-color 0.2s;
     margin-right: 8px; /* Space between info and close */
     order: 2; /* Info button second */
+    background: none;
+    border: unset;
 }
 #dominique-header #dominique-info-button:hover {
-    color: #777; 
-    border-color: #bbb;
 }
 
 /* Close button adjustments for header context */
 #dominique-header #dominique-close-button {
-    background: transparent;
-    border: none;
-    font-size: 1.6em; 
-    padding: 0; 
-    line-height: 1; 
     cursor: pointer;
-    color: #aaa; 
-    margin-left: 0; /* No left margin as others have margin-right */
     order: 3; /* Close button last */
+    background: none;
+    border: unset;
 }
 #dominique-header #dominique-close-button:hover {
-    color: #777; 
 }
 
-
 #dominique-chat-history {
-    flex-grow: 1; 
+    flex-grow: 1;
     overflow-y: auto;
-    padding: 15px; 
-    min-height: 150px; 
-    background-color: #f9f9f9; 
+    padding: 15px;
+    min-height: 150px;
+    background-color: #f9f9f9;
 }
 
 .chat-message {
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     word-wrap: break-word;
-    padding: 8px 12px; 
-    border-radius: 12px; 
+    padding: 8px 12px;
+    border-radius: 12px;
     line-height: 1.45;
     font-size: 0.95em;
 }
 
 .user-message {
-    text-align: left; 
-    background-color: #e3f2fd; 
-    color: #1e88e5; 
-    margin-left: 0; 
-    margin-right: auto; 
-    max-width: 80%; 
+    text-align: left;
+    background-color: #e3f2fd;
+    color: #1e88e5;
+    margin-left: 0;
+    margin-right: auto;
+    max-width: 80%;
 }
 
 .system-message {
     text-align: left;
-    background-color: #e4e6eb; 
-    color: #333; 
-    margin-left: 0; 
-    margin-right: auto; 
-    max-width: 80%;   
+    background-color: #e4e6eb;
+    color: #333;
+    margin-left: 0;
+    margin-right: auto;
+    max-width: 80%;
 }
 
 .system-message h4 {
@@ -230,76 +206,51 @@ body {
     padding: 2px 6px;
     border-radius: 4px;
     font-family: "Courier New", Courier, monospace;
-    color: #d63384; 
+    color: #d63384;
 }
 
 #dominique-input-area {
     display: flex;
-    padding: 12px 15px; 
-    border-top: 1px solid #f0f0f0; 
-    background-color: #fff; 
+    padding: 12px 15px;
+    border-top: 1px solid #f0f0f0;
+    background-color: #fff;
 }
 
-#dominique-command-input { 
+#dominique-command-input {
     flex-grow: 1;
-    margin-right: 10px; 
-    padding: 10px 12px; 
-    border: none; 
-    border-bottom: 1px solid #ddd; 
-    border-radius: 0; 
+    margin-right: 10px;
+    padding: 10px 12px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
     background-color: transparent;
     font-size: 1em;
     transition: border-color 0.2s ease-in-out;
 }
 #dominique-command-input:focus {
     outline: none;
-    border-bottom-color: #007bff; 
-    border-bottom-width: 2px; 
+    border-bottom-color: #e031c0;
+    border-bottom-width: 2px;
 }
 
-#dominique-submit-button { 
-    padding: 10px 18px; 
-    background-color: #673AB7; /* Purple color from previous update */
+#dominique-submit-button {
+    padding: 10px 18px;
+    background-color: #e031c0; /* Purple color from previous update */
     color: white;
     border: none;
-    border-radius: 4px; 
+    border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s ease-in-out;
 }
 #dominique-submit-button:hover {
-    background-color: #512DA8; /* Darker purple on hover */
+    background-color: #512da8; /* Darker purple on hover */
 }
-
-/* Dominique Info Button (original styles - these are now adapted for header context) */
-/* These specific #dominique-info-button rules can be removed if fully covered by #dominique-header #dominique-info-button */
-/*
-#dominique-info-button {
-    width: 24px; 
-    height: 24px; 
-    border-radius: 50%;
-    background-color: transparent; 
-    color: #aaa; 
-    border: 1px solid #ddd; 
-    font-weight: bold;
-    text-align: center;
-    line-height: 22px; 
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0;
-    transition: color 0.2s, border-color 0.2s;
-}
-
-#dominique-info-button:hover {
-    color: #777; 
-    border-color: #bbb;
-}
-*/
 
 .canvas ul {
-    margin-left: 20px; 
-    list-style-type: disc; 
-    padding-left: 20px; 
+    margin-left: 20px;
+    list-style-type: disc;
+    padding-left: 20px;
 }
 .canvas ul li {
     padding: 2px 0;
@@ -315,30 +266,30 @@ body {
 .card {
     border: 1px solid #ddd;
     padding: 15px;
-    margin: 10px 0; 
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     border-radius: 4px;
-    background-color: #fff; 
+    background-color: #fff;
 }
 .card-title {
     margin-top: 0;
     font-size: 1.5em;
     margin-bottom: 10px;
-    color: #333; 
+    color: #333;
 }
 .card-description {
     margin-bottom: 15px;
     color: #555;
 }
 .card-button {
-    background-color: #28a745; 
+    background-color: #28a745;
     color: white;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 4px;
     text-align: center;
-    font-size: 1em; 
+    font-size: 1em;
 }
 .card-button:hover {
     background-color: #218838;
@@ -346,44 +297,44 @@ body {
 
 #dominique-idle-indicator {
     position: fixed;
-    bottom: 30px; 
-    right: 30px;  
-    width: 42px; 
-    height: 42px; 
+    bottom: 30px;
+    right: 30px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: linear-gradient(to right, blue, red); 
+    background: linear-gradient(to right, blue, red);
     cursor: pointer;
-    z-index: 998; 
-    display: none; 
+    z-index: 998;
+    display: none;
 }
 #dominique-idle-indicator::before {
-  content: "";
-  position: absolute;
-  top: -8px; 
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
-  z-index: -1;
-  border-radius: 50%; 
-  background: linear-gradient(to right, red, blue); 
-  filter: blur(20px); 
-  opacity: 0.8; 
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    z-index: -1;
+    border-radius: 50%;
+    background: linear-gradient(to right, red, blue);
+    filter: blur(20px);
+    opacity: 0.8;
 }
 
 #page-footer {
-    padding: 20px 0;      
-    text-align: center;   
-    margin-top: 30px;     
-    border-top: 1px solid #eee; 
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 30px;
+    border-top: 1px solid #eee;
 }
 
 #page-footer p {
     margin: 0;
 }
 
-.footer-link { 
-    margin: 0 10px; 
-    color: #007bff; 
+.footer-link {
+    margin: 0 10px;
+    color: #007bff;
     text-decoration: none;
 }
 

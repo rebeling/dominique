@@ -1,71 +1,159 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-    <title>AI Editor</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
-<body>
-    <header id="page-header">
-        <h1>Interact with Dominique</h1>
-    </header>
-    <div class="canvas"> <!-- .ai-editor wrapper removed -->
-        <h1>Welcome to Your Editable Page</h1>
-        <p>This is a sample page. If you're in edit mode (e.g., by adding "?edit=1" to the URL), click on any element to modify it with the Dominique agent. Try selecting text to make it bigger, or this paragraph and ask Dominique to "change text to: I've been changed!".</p>
+    <head>
+        <title>AI Editor</title>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <header id="page-header"></header>
+        <div class="canvas">
+            <h1>Interact with Dominique</h1>
+            <p>
+                This is a sample page. If you're in edit mode (e.g., by adding
+                "?edit=1" to the URL), click on any element to modify it with
+                the Dominique agent. Try selecting text to make it bigger, or
+                this paragraph and ask Dominique to "change text to: I've been
+                changed!".
+            </p>
 
-            <div style="display: flex; margin-top: 20px; margin-bottom: 20px; background-color: #f9f9f9; padding:15px; border-radius: 5px;">
-                <div style="flex-basis: 50%; padding-right: 15px; box-sizing: border-box;">
+            <div
+                style="
+                    display: flex;
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                    background-color: #f9f9f9;
+                    padding: 15px;
+                    border-radius: 5px;
+                "
+            >
+                <div
+                    style="
+                        flex-basis: 50%;
+                        padding-right: 15px;
+                        box-sizing: border-box;
+                    "
+                >
                     <h3>Dynamic Feature One</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Select this text to try styling it.</p>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                        sed do eiusmod tempor incididunt ut labore et dolore
+                        magna aliqua. Select this text to try styling it.
+                    </p>
                 </div>
-                <div style="flex-basis: 50%; padding-left: 15px; box-sizing: border-box; border-left: 1px solid #eee;">
+                <div
+                    style="
+                        flex-basis: 50%;
+                        padding-left: 15px;
+                        box-sizing: border-box;
+                        border-left: 1px solid #eee;
+                    "
+                >
                     <h3>Interactive Service Two</h3>
-                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. You can change this content too.</p>
+                    <p>
+                        Ut enim ad minim veniam, quis nostrud exercitation
+                        ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        You can change this content too.
+                    </p>
                 </div>
             </div>
 
             <div class="card">
                 <h3 class="card-title">Explore Our Platform</h3>
-                <p class="card-description">Discover the wide range of solutions and tools we offer to help you achieve your goals. Click the button to learn more about our innovative features.</p>
+                <p class="card-description">
+                    Discover the wide range of solutions and tools we offer to
+                    help you achieve your goals. Click the button to learn more
+                    about our innovative features.
+                </p>
                 <button class="card-button">Discover Features</button>
             </div>
 
-            <img src="https://unsplash.com/photos/W1F9g0LSVrg/download?force=true&w=800" alt="Underwater view of the ocean with a mountain in the background - Photo by Niklas Jonasson" style="max-width: 100%; height: auto; margin-top:20px; margin-bottom:20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <img
+                src="https://unsplash.com/photos/W1F9g0LSVrg/download?force=true&w=800"
+                alt="Underwater view of the ocean with a mountain in the background - Photo by Niklas Jonasson"
+                style="
+                    max-width: 100%;
+                    height: auto;
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                "
+            />
             <div class="image-description">
-                Photo by <a href="https://unsplash.com/@niklasjonasson" target="_blank" rel="noopener noreferrer">Niklas Jonasson</a>
-                on <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a>.
-                <br>
-                Underwater view of the ocean with a mountain in the background. Location: Bjuröklubb, Sverige.
+                Photo by
+                <a
+                    href="https://unsplash.com/@niklasjonasson"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Niklas Jonasson</a
+                >
+                on
+                <a
+                    href="https://unsplash.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Unsplash</a
+                >.
+                <br />
+                Underwater view of the ocean with a mountain in the background.
+                Location: Bjuröklubb, Sverige.
             </div>
 
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This final paragraph is also editable.</p>
-    </div> <!-- .canvas div ends -->
+            <p>
+                Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+                cupidatat non proident, sunt in culpa qui officia deserunt
+                mollit anim id est laborum. This final paragraph is also
+                editable.
+            </p>
 
-    <footer id="page-footer">
-        <p>
-            <a href="#" class="footer-link">Link 1 (Placeholder)</a> |
-            <a href="#" class="footer-link">Link 2 (Placeholder)</a> |
-            <a href="#" class="footer-link">Link 3 (Placeholder)</a>
-        </p>
-    </footer>
+            <footer id="page-footer">
+                <p>
+                    <a href="#" class="footer-link">Link 1 (Placeholder)</a> |
+                    <a href="#" class="footer-link">Link 2 (Placeholder)</a> |
+                    <a href="#" class="footer-link">Link 3 (Placeholder)</a>
+                </p>
+            </footer>
+        </div>
+        <!-- .canvas div ends -->
 
-    <div id="dominique-interface">
-        <div id="dominique-header">
-            <span>Dominique</span>
-            <div> <!-- Wrapper for right-aligned buttons -->
-                <button id="saveButton" title="Save Page">&#128190;</button>
-                <button id="dominique-info-button">i</button>
-                <button id="dominique-close-button" title="Close Dominique">&times;</button>
+        <div id="dominique-interface">
+            <div id="dominique-header">
+                <span>Dominique</span>
+                <div>
+                    <!-- Wrapper for right-aligned buttons -->
+                    <button id="saveButton" title="Save Page">
+                        <span class="material-icons">save</span>
+                    </button>
+                    <button id="dominique-info-button" title="Info">
+                        <span class="material-icons">info</span>
+                    </button>
+                    <button id="dominique-close-button" title="Close Dominique">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </div>
+            <div id="dominique-chat-history">
+                <!-- Chat messages will be appended here by JS -->
+            </div>
+            <div id="dominique-input-area">
+                <input
+                    type="text"
+                    id="dominique-command-input"
+                    placeholder="Type a command..."
+                />
+                <button id="dominique-submit-button">Send</button>
             </div>
         </div>
-        <div id="dominique-chat-history">
-            <!-- Chat messages will be appended here by JS -->
-        </div>
-        <div id="dominique-input-area">
-            <input type="text" id="dominique-command-input" placeholder="Type a command...">
-            <button id="dominique-submit-button">Send</button>
-        </div>
-    </div>
-    <script src="editor.js" defer></script>
-    <div id="dominique-idle-indicator" title="Open Dominique" style="display: none;"></div>
-</body>
+        <script src="editor.js" defer></script>
+        <div
+            id="dominique-idle-indicator"
+            title="Open Dominique"
+            style="display: none"
+        ></div>
+    </body>
 </html>
