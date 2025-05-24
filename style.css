@@ -169,12 +169,12 @@ body {
 }
 
 .user-message {
-    text-align: left;
+    text-align: right;
     background-color: #e3f2fd;
     color: #1e88e5;
     margin-left: 0;
     margin-right: auto;
-    max-width: 80%;
+    max-width: 86%;
 }
 
 .system-message {
@@ -183,7 +183,7 @@ body {
     color: #333;
     margin-left: 0;
     margin-right: auto;
-    max-width: 80%;
+    max-width: 86%;
 }
 
 .system-message h4 {
