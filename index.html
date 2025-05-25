@@ -113,9 +113,15 @@
 
             <footer id="page-footer">
                 <p>
-                    <a href="#" class="footer-link">Link 1 (Placeholder)</a> |
-                    <a href="#" class="footer-link">Link 2 (Placeholder)</a> |
-                    <a href="#" class="footer-link">Link 3 (Placeholder)</a>
+                    <a id="edit-toggle" href="#" class="footer-link"
+                        >Edit Mode</a
+                    >
+                    |
+                    <a
+                        href="https://github.com/rebeling/dominique"
+                        class="footer-link"
+                        >Repo on Github</a
+                    >
                 </p>
             </footer>
         </div>
@@ -155,5 +161,25 @@
             title="Open Dominique"
             style="display: none"
         ></div>
+
+        <script>
+            const link = document.getElementById("edit-toggle");
+            const url = new URL(window.location.href);
+            const isEdit = url.searchParams.get("edit") === "1";
+
+            if (isEdit) {
+                // Show "Edit End" and toggle URL without ?edit=1
+                link.textContent = "Edit End";
+                url.searchParams.delete("edit");
+            } else {
+                // Show "Edit Mode" and toggle URL with ?edit=1
+                link.textContent = "Edit Mode";
+                url.searchParams.set("edit", "1");
+            }
+
+            link.href =
+                url.pathname +
+                (url.search ? "?" + url.searchParams.toString() : "");
+        </script>
     </body>
 </html>
