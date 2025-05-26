@@ -92,10 +92,10 @@ body {
     right: -10px;
     bottom: -10px;
     z-index: -1;
-    border-radius: 20px;
-    background: linear-gradient(to right, red, blue);
-    filter: blur(30px);
-    opacity: 0.9;
+    border-radius: 2px;
+    background: linear-gradient(135deg, #fef3c7, #fbcfe8, #e0e7ff, #bae6fd);
+    filter: blur(10px);
+    opacity: 1;
 }
 
 #dominique-header {
@@ -303,7 +303,7 @@ body {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: linear-gradient(to right, blue, red);
+    background: linear-gradient(135deg, #fef3c7, #fbcfe8, #e0e7ff, #bae6fd);
     cursor: pointer;
     z-index: 998;
     display: none;
@@ -317,9 +317,9 @@ body {
     bottom: -8px;
     z-index: -1;
     border-radius: 50%;
-    background: linear-gradient(to right, red, blue);
-    filter: blur(20px);
-    opacity: 0.8;
+    background: linear-gradient(135deg, #fef3c7, #fbcfe8, #e0e7ff, #bae6fd);
+    filter: blur(10px);
+    opacity: 1;
 }
 
 #page-footer {
