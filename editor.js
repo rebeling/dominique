@@ -210,6 +210,17 @@ function initializeEditor() {
             commandInput.value = ''; 
             commandInput.focus(); 
         });
+
+        // Add keydown listener to commandInput for "Enter" key
+        commandInput.addEventListener('keydown', (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Stop default "Enter" key action
+                if (dominiqueSubmitButton) { // Ensure submit button exists
+                    dominiqueSubmitButton.click(); // Programmatically click the Send button
+                }
+            }
+        });
+
     } else {
         if (!dominiqueSubmitButton) console.error('Dominique submit button not found in edit mode!');
         if (!commandInput) console.error('Dominique command input not found in edit mode!');
@@ -253,7 +264,9 @@ function initializeEditor() {
 
     if (dominiqueHeader && dominiqueInterface) {
         dominiqueHeader.addEventListener('mousedown', (e) => {
-            if (e.target === dominiqueInfoButton || e.target === dominiqueCloseButton) return;
+             // Prevent dragging if mousedown is on any button within the header's icon group
+            if (e.target.closest('button')) return;
+
             isDragging = true;
             initialMouseX = e.clientX; initialMouseY = e.clientY;
             initialModalLeft = dominiqueInterface.offsetLeft; initialModalTop = dominiqueInterface.offsetTop;
